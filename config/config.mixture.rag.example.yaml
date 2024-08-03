@@ -1,0 +1,56 @@
+experiment_name: "mixture_rag"
+
+llm_layers:
+  - layer_type: "rag"
+    llm:
+      - provider: "bedrock" 
+        model_spec:
+          model_id: "anthropic.claude-3-haiku-20240307-v1:0"
+          model_kwargs: 
+            max_tokens: 4096
+            temperature: 0.1
+            top_k: 250
+            top_p: 1
+            stop_sequences: ["\n\nHuman"]
+        prompt:
+          system_message: Act like a Machine Learning Teacher
+          user_message: Ask a question or provide a prompt
+      - provider: "groq"
+        model_spec:
+            model_name: "mixtral-8x7b-32768"
+            temperature: 0.1
+            max_tokens: 4096
+        prompt:
+            system_message: Act like a Machine Learning Teacher
+            user_message: Ask a question or provide a prompt
+  - layer_type: "agregator"
+    llm:
+      - provider: "openai"
+        model_spec:
+          model: "text-davinci-003"
+          temperature: 0.1
+          max_tokens: 4096
+        prompt:
+            system_message: Act like a Machine Learning Teacher
+            user_message: Ask a question or provide a prompt
+
+embedder:
+  model_id: "amazon.titan-embed-text-v2:0"
+  model_kwargs: 
+    dimensions: 512
+    normalize: True
+
+retriever:
+  search_type: "similarity"
+  retriever_kwargs:
+    k: 2
+
+chunker:
+  chunk_size: 1500
+  chunk_overlap: 100
+
+data:
+  path: "./data"
+
+vector_store:
+  path: "./database"
