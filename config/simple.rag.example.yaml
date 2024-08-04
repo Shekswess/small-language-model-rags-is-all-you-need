@@ -30,7 +30,7 @@ chunker:
   chunk_overlap: 100
 
 data:
-  path: "./data"
+  path: "./data/raw/"
 
 vector_store:
-  path: "./database"
+  path: "./data/database_1500_100"
