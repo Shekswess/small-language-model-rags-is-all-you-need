@@ -1,0 +1,6 @@
+langchain==0.2.12
+langchain_community==0.2.11
+langchain_groq==0.1.9
+pydantic==2.8.2
+python-dotenv==1.0.1
+PyYAML==6.0.1
