@@ -2,12 +2,24 @@
 This module defines the pipeline execution for Mixture RAG.
 """
 
+import logging
 import os
+import warnings
 
+from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
+from ragas.metrics import answer_relevancy, context_utilization, faithfulness
 
 from src.configuration.configuration_model import MixtureRAGConfig
 from src.models.mixture_rag import MixtureRAG
+from src.utils.evaluation import init_llm_n_metrics, score_output
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+warnings.filterwarnings("ignore")
+
+METRICS = [faithfulness, answer_relevancy, context_utilization]
 
 
 def mixture_rag_pipeline_execution(
@@ -24,6 +36,12 @@ def mixture_rag_pipeline_execution(
     Returns:
         None
     """
+    logger.info("Creating Langfuse client")
+    langfuse = Langfuse(
+        secret_key=os.environ["LANGFUSE_SECRET_KEY"],
+        public_key=os.environ["LANGFUSE_PUBLIC_KEY"],
+        host=os.environ["LANGFUSE_HOST"],
+    )
 
     langfuse_handler = CallbackHandler(
         secret_key=os.environ["LANGFUSE_SECRET_KEY"],
@@ -31,6 +49,9 @@ def mixture_rag_pipeline_execution(
         host=os.environ["LANGFUSE_HOST"],
         session_id=config.experiment_name,
     )
+
+    logger.info("Initializing LLM and metrics for evaluation")
+    init_llm_n_metrics(METRICS)
 
     mixture_rag = MixtureRAG(config)
     mixture_rag.initialize_base()
@@ -48,9 +69,16 @@ def mixture_rag_pipeline_execution(
     chain = mixture_rag.get_aggregator_llm_chain()
 
     for question in questions:
-        contexts = [context.page_content for context in mixture_rag.retriever.invoke(question)]
+        logger.info("Processing question: %s", question)
+        contexts = [
+            context.page_content for context in mixture_rag.retriever.invoke(question)
+        ]
         answer = chain.invoke(
             {"question": question, "context": contexts},
             config={"callbacks": [langfuse_handler]},
-        )
+        ).content
+        trace_id = langfuse_handler.get_trace_id()
+        score_output(langfuse, trace_id, METRICS, question, contexts, answer)
         print(question, answer, contexts)
+
+    logger.info("MixtureRAG pipeline execution complete")
