@@ -1,8 +1,10 @@
 """Module for defining the structure of the configs for the RAG models."""
+import warnings
+from typing import Dict, List, Optional, Union
 
-from typing import List, Optional, Union, Dict
-from pydantic import BaseModel, conint, confloat
+from pydantic import BaseModel, confloat, conint
 
+warnings.filterwarnings("ignore")
 
 class ModelKwargsBedrock(BaseModel):
     """Pydantic model for the model kwargs for the Bedrock model."""

@@ -1,5 +1,5 @@
 """
-This module defines the pipeline execution for SimpleRAG.
+This module defines the pipeline execution for Mixture RAG.
 """
 
 import logging
@@ -10,8 +10,8 @@ from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 from ragas.metrics import answer_relevancy, context_utilization, faithfulness
 
-from src.configuration.configuration_model import SimpleRAGConfig
-from src.models.simple_rag import SimpleRAG
+from src.configuration.configuration_model import MixtureRAGConfig
+from src.models.mixture_rag import MixtureRAG
 from src.utils.evaluation import init_llm_n_metrics, score_output
 
 logging.basicConfig(level=logging.INFO)
@@ -22,8 +22,8 @@ warnings.filterwarnings("ignore")
 METRICS = [faithfulness, answer_relevancy, context_utilization]
 
 
-def simple_rag_pipeline_execution(
-    config: SimpleRAGConfig, prompt: list, questions: list
+def mixture_rag_pipeline_execution(
+    config: MixtureRAGConfig, rag_prompts: list, aggregator_prompt: str, questions: list
 ):
     """
     Executes the SimpleRAG pipeline.
@@ -53,31 +53,32 @@ def simple_rag_pipeline_execution(
     logger.info("Initializing LLM and metrics for evaluation")
     init_llm_n_metrics(METRICS)
 
-    logger.info("Initializing SimpleRAG")
-    simple_rag = SimpleRAG(config)
-    simple_rag.initialize_base()
+    mixture_rag = MixtureRAG(config)
+    mixture_rag.initialize_base()
 
-    if not simple_rag.check_vector_store():
-        simple_rag.load_split_ingest_data()
-        simple_rag.save_vector_store()
+    if not mixture_rag.check_vector_store():
+        mixture_rag.load_split_ingest_data()
+        mixture_rag.save_vector_store()
     else:
-        simple_rag.load_vector_store()
+        mixture_rag.load_vector_store()
 
-    simple_rag.create_prompt(prompt[0])
-    simple_rag.initialize_retriever()
-    chain = simple_rag.get_retrieval_qa_chain()
+    mixture_rag.create_rag_prompts(rag_prompts)
+    mixture_rag.create_aggregator_prompt(aggregator_prompt)
+    mixture_rag.initialize_retriever()
+    mixture_rag.create_rag_llm_chains()
+    chain = mixture_rag.get_aggregator_llm_chain()
 
     for question in questions:
         logger.info("Processing question: %s", question)
         contexts = [
-            context.page_content for context in simple_rag.retriever.invoke(question)
+            context.page_content for context in mixture_rag.retriever.invoke(question)
         ]
         answer = chain.invoke(
-            question,
+            {"question": question, "context": contexts},
             config={"callbacks": [langfuse_handler]},
-        )["result"]
+        ).content
         trace_id = langfuse_handler.get_trace_id()
         score_output(langfuse, trace_id, METRICS, question, contexts, answer)
         print(question, answer, contexts)
 
-    logger.info("SimpleRAG pipeline execution complete")
+    logger.info("MixtureRAG pipeline execution complete")

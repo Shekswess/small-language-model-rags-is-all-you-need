@@ -1,6 +1,9 @@
-langchain==0.2.12
-langchain_community==0.2.11
-langchain_groq==0.1.9
-pydantic==2.8.2
+langfuse==2.43.1
 python-dotenv==1.0.1
 PyYAML==6.0.1
+ragas==0.1.13
+langchain==0.2.12
+langchain_community==0.2.11
+langchain_core==0.2.29
+langchain_groq==0.1.9
+pydantic==2.8.2

@@ -14,7 +14,16 @@ layers:
               top_p: 1
               stop_sequences: ["\n\nHuman"]
           prompt:
-            system_message: "Act like a Machine Learning Teacher"
+            system_message: "Act like a Machine Learning Expert"
+            user_message: "Ask a question or provide a prompt"
+      - llm:
+          provider: "groq"
+          model_spec:
+            model_name: "mixtral-8x7b-32768"
+            temperature: 0.1
+            max_tokens: 4096
+          prompt:
+            system_message: "Act like a Machine Learning Beginner"
             user_message: "Ask a question or provide a prompt"
       - llm:
           provider: "groq"
@@ -30,11 +39,16 @@ layers:
       - llm:
           provider: "openai"
           model_spec:
-            model: "text-davinci-003"
+            model: "gpt-4o"
             temperature: 0.1
             max_tokens: 4096
           prompt:
-            system_message: "Act like a Machine Learning Teacher"
+            system_message: |
+              You have been provided with a set of responses from various open-source models to the latest user query. 
+              Your task is to synthesize these responses into a single, high-quality response. 
+              It is crucial to critically evaluate the information provided in these responses, recognizing that some of it may be biased or incorrect. 
+              Your response should not simply replicate the given answers but should offer a refined, accurate, and comprehensive reply to the instruction. 
+              Ensure your response is well-structured, coherent, and adheres to the highest standards of accuracy and reliability.
             user_message: "Ask a question or provide a prompt"
 
 embedder:
@@ -56,4 +70,4 @@ data:
   path: "./data"
 
 vector_store:
-  path: "./database"
+  path: "./data/database_1500_100"
