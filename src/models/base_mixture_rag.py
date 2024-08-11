@@ -12,7 +12,7 @@ class MixtureRAGBase(ABC):
         pass
 
     @abstractmethod
-    def initialize_agregator_llm(self):
+    def initialize_aggregator_llm(self):
         """Method to initialize the aggregator LLM."""
 
     @abstractmethod
@@ -60,8 +60,8 @@ class MixtureRAGBase(ABC):
         """Method to create the prompt for the aggregator LLM."""
 
     @abstractmethod
-    def get_retrieval_qa_chains(self):
-        """Method to get the retrieval QA chains for the RAG LLMs."""
+    def create_rag_llm_chains(self):
+        """Method to get the RAG LLM chain."""
 
     @abstractmethod
     def get_aggregator_llm_chain(self):
