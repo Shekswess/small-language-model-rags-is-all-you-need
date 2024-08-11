@@ -21,6 +21,7 @@ from configuration.configuration_model import SimpleRAGConfig
 
 warnings.filterwarnings("ignore")
 
+
 class SimpleRAG(SimpleRAGBase):
     """SimpleRAG model class."""
 
@@ -150,6 +151,9 @@ class SimpleRAG(SimpleRAGBase):
     def create_prompt(self, template: str):
         """
         Method to create the prompt for the LLM.
+
+        Args:
+            template (str): The template for the prompt.
         """
         template = template.format(
             system_message=self.config.llm.prompt.system_message,
@@ -159,9 +163,12 @@ class SimpleRAG(SimpleRAGBase):
             template=template, input_variables=["context", "question"]
         )
 
-    def get_retrieval_qa_chain(self):
+    def get_retrieval_qa_chain(self) -> RetrievalQA:
         """
         Method to get the retrieval QA chain.
+
+        Returns:
+            RetrievalQA: The retrieval QA chain.
         """
         self.chain = RetrievalQA.from_chain_type(
             llm=self.llm,
