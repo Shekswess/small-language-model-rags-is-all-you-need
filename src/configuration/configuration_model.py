@@ -2,25 +2,29 @@
 import warnings
 from typing import Dict, List, Optional, Union
 
-from pydantic import BaseModel, confloat, conint
+from pydantic import BaseModel, Field, confloat, conint
 
 warnings.filterwarnings("ignore")
 
 class ModelKwargsBedrock(BaseModel):
     """Pydantic model for the model kwargs for the Bedrock model."""
 
-    max_tokens: conint(ge=256, le=8192)
-    temperature: confloat(ge=0.0, le=1.0)
+    max_tokens: Optional[conint(ge=256, le=8192)] = Field(None, alias='max_gen_len')
+    temperature: Optional[confloat(ge=0.0, le=1.0)] = None
     top_k: Optional[conint(ge=0, le=500)] = None
     top_p: Optional[confloat(ge=0.0, le=500.0)] = None
     stop_sequences: Optional[List[str]] = None
+
+    class Config:
+        """Pydantic config for the model kwargs for the Bedrock model."""
+        allow_population_by_field_name = True
 
 
 class ModelSpecBedrock(BaseModel):
     """Pydantic model for the model spec for the Bedrock model."""
 
-    model_id: Optional[str] = None
-    model_kwargs: ModelKwargsBedrock
+    model_id: str
+    model_kwargs: Optional[ModelKwargsBedrock] = None
 
 
 class ModelSpecGroq(BaseModel):
