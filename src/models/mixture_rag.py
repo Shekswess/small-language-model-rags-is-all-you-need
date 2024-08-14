@@ -8,7 +8,8 @@ import warnings
 from langchain.document_loaders import PyMuPDFLoader
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.chat_models import BedrockChat, ChatOpenAI
+from langchain_aws import ChatBedrock
+from langchain_community.chat_models import ChatOpenAI
 from langchain_community.embeddings import BedrockEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
@@ -52,13 +53,14 @@ class MixtureRAG(MixtureRAGBase):
                     logger.info("Initializing Aggregator LLM")
                     for model in layer.layer_spec:
                         if model.llm.provider == "bedrock":
-                            self.aggregator_llm = BedrockChat(
+                            self.aggregator_llm = ChatBedrock(
                                 region_name=os.environ["BEDROCK_REGION_NAME"],
                                 credentials_profile_name=os.environ[
                                     "BEDROCK_CREDENTIALS_PROFILE_NAME"
                                 ],
                                 model_id=model.llm.model_spec.model_id,
                                 model_kwargs=model.llm.model_spec.model_kwargs,
+                                beta_use_converse_api=True,
                             )
                             logger.info("Bedrock Aggregator LLM initialized")
                             break
@@ -98,13 +100,14 @@ class MixtureRAG(MixtureRAGBase):
                 if layer.layer_type == "rag":
                     for model in layer.layer_spec:
                         if model.llm.provider == "bedrock":
-                            rag_llm = BedrockChat(
+                            rag_llm = ChatBedrock(
                                 region_name=os.environ["BEDROCK_REGION_NAME"],
                                 credentials_profile_name=os.environ[
                                     "BEDROCK_CREDENTIALS_PROFILE_NAME"
                                 ],
                                 model_id=model.llm.model_spec.model_id,
                                 model_kwargs=model.llm.model_spec.model_kwargs,
+                                beta_use_converse_api=True,
                             )
                             self.rag_llms.append(rag_llm)
                             logger.info("Bedrock RAG LLM initialized")
@@ -145,7 +148,6 @@ class MixtureRAG(MixtureRAGBase):
             model_kwargs=self.config.embedder.model_kwargs,
         )
         logger.info("Bedrock Embedder initialized")
-
 
     def initialize_splitter(self):
         """
@@ -297,6 +299,8 @@ class MixtureRAG(MixtureRAGBase):
         """
         logger.info("Creating RAG LLM chains")
         for rag_llm in self.rag_llms:
+            logger.info(f"Creating RAG LLM chain for: {rag_llm}")
+            logger.info(f"Prompt: {self.rag_prompts[self.rag_llms.index(rag_llm)]}")
             chain = (
                 RunnablePassthrough(
                     context=RunnablePassthrough(), question=RunnablePassthrough()

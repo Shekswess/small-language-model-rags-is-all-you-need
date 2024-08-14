@@ -9,7 +9,8 @@ from langchain.chains import RetrievalQA
 from langchain.document_loaders import PyMuPDFLoader
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.chat_models import BedrockChat, ChatOpenAI
+from langchain_aws import ChatBedrock
+from langchain_community.chat_models import ChatOpenAI
 from langchain_community.embeddings import BedrockEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_groq import ChatGroq
@@ -46,11 +47,12 @@ class SimpleRAG(SimpleRAGBase):
         """
         logger.info("Initializing LLM")
         if self.config.llm.provider == "bedrock":
-            self.llm = BedrockChat(
+            self.llm = ChatBedrock(
                 region_name=os.environ["BEDROCK_REGION_NAME"],
                 credentials_profile_name=os.environ["BEDROCK_CREDENTIALS_PROFILE_NAME"],
                 model_id=self.config.llm.model_spec.model_id,
                 model_kwargs=self.config.llm.model_spec.model_kwargs,
+                beta_use_converse_api=True
             )
             logger.info("Bedrock LLM initialized")
         elif self.config.llm.provider == "groq":
