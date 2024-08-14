@@ -1,0 +1,37 @@
+experiment_name: "simple-rag-llama-3-8b-instruct"
+
+llm:
+  provider: "bedrock" 
+  model_spec:
+    model_id: "meta.llama3-8b-instruct-v1:0"
+    model_kwargs: 
+      max_tokens: 4096
+      temperature: 0.1
+      top_p: 1
+  prompt:
+    system_message: | 
+      You are an assistant that has a lot of knowledge about Large Language Models. A
+      Answer the user's question in a way that is easy to understand and informative.
+      Use the provided context to generate a response that is relevant and accurate.
+    user_message: "Please answer my question based on the provided context:"
+
+embedder:
+  model_id: "amazon.titan-embed-text-v2:0"
+  model_kwargs: 
+    dimensions: 512
+    normalize: True
+
+retriever:
+  search_type: "similarity"
+  retriever_kwargs:
+    k: 5
+
+chunker:
+  chunk_size: 1500
+  chunk_overlap: 100
+
+data:
+  path: "./data/raw/"
+
+vector_store:
+  path: "./data/database_1500_100"
