@@ -4,6 +4,7 @@ import warnings
 from typing import Dict, List, Optional, Union
 import sklearn
 import numpy as np
+from sklearn.base import BaseEstimator
 
 from pydantic import BaseModel, Field, confloat, conint
 
