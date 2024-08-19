@@ -3,6 +3,7 @@
 import warnings
 from typing import Dict, List, Optional, Union
 import sklearn
+import numpy as np
 
 from pydantic import BaseModel, Field, confloat, conint
 
