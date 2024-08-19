@@ -300,7 +300,7 @@ All of the prompts used in the experiments are stored in the `src/constants/prom
 
 The Simple RAG pipeline uses a single LLM to generate the responses. This is how the Simple RAG looks:
 
-<!Image>
+![image](https://github.com/user-attachments/assets/ee34da3d-6be8-4b92-9943-36abedfc575a)
 
 For all the experiments the system and the user messages are the same:
 
@@ -320,7 +320,8 @@ user_message: "Please answer my question based on the provided context:"
 
 The Mixture RAG pipeline mostly is like the Simple RAG pipeline but in the Generator we basically trigger multiple LLMs(Simple RAGs with the same prompt system and user messages previsoly defined) to generate the responses and those response are the aggregated by another LLM. This is how the Mixture RAG looks:
 
-<!Image>
+![image](https://github.com/user-attachments/assets/649467b8-bafa-4d85-831a-dab052314662)
+
 
 There are three different system and user messages combinations used for the experiments, for the aggregation LLM:
 
@@ -365,13 +366,16 @@ All the configurations for the experiments can be found in the `src/config` fold
 
 ### Results and Conclusion
 
+The first initial exploration of the results was to check what questions were problematic, or in other words what questions had lower scores. The idea is to drop those questions from the experiments and to use the 10 most relevant questions and answers.
+To identify those questions, the dataset is group by the questions and it is calculated the mean of the scores for each questions for the metrics faithfulness, answer relevancy and context utilization. From those mean scores for each questions another basic average score is created which is used to rank the questions.
+
 <h2>Question Mean Scores</h2>
 <table>
   <thead>
     <tr>
       <th>Index</th>
       <th>Question</th>
-      <th>Mean Score</th>
+      <th>Score</th>
     </tr>
   </thead>
   <tbody>
@@ -391,6 +395,8 @@ All the configurations for the experiments can be found in the `src/config` fold
     <tr><td>14</td><td>On what architecture the GPT-3 model is based on?</td><td>0.583516</td></tr>
   </tbody>
 </table>
+
+From the table we can see what questions have the lowest scores. The last four questions are dropped from the analysis of the results.
 
 <h2>Experiment Faithfulness</h2>
 <table>
