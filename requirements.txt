@@ -6,4 +6,6 @@ langchain==0.2.12
 langchain_community==0.2.11
 langchain_core==0.2.29
 langchain_groq==0.1.9
+langchain_aws==0.1.16
 pydantic==2.8.2
+pandas==2.2.2
