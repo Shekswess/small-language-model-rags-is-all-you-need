@@ -2,6 +2,7 @@
 
 import warnings
 from typing import Dict, List, Optional, Union
+import sklearn
 
 from pydantic import BaseModel, Field, confloat, conint
 
