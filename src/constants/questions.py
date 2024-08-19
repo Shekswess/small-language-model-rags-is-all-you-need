@@ -14,5 +14,5 @@ QUESTIONS = [
     "What is sliding window attention?",
     "Is Mixtral based on the idea of a mixture of experts?",
     "What is Mixture of Agents?",
-    "How can attention be described in the Transformer?"
+    "How can attention be described in the Transformer?",
 ]

@@ -1,13 +1,13 @@
 """
 This script executes the appropriate pipeline based on the loaded configuration.
 """
+
 import logging
 import warnings
 
 from dotenv import load_dotenv
 
-from src.configuration.configuration_model import (MixtureRAGConfig,
-                                                   SimpleRAGConfig)
+from src.configuration.configuration_model import MixtureRAGConfig, SimpleRAGConfig
 from src.configuration.load_configuration import load_config
 from src.constants import prompts, questions
 from src.pipelines.mixture_rag_pipeline import mixture_rag_pipeline_execution

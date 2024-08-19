@@ -2,18 +2,16 @@
 
 import warnings
 from typing import Dict, List, Optional, Union
-import sklearn
-import numpy as np
-from sklearn.base import BaseEstimator
 
 from pydantic import BaseModel, Field, confloat, conint
 
 warnings.filterwarnings("ignore")
 
+
 class ModelKwargsBedrock(BaseModel):
     """Pydantic model for the model kwargs for the Bedrock model."""
 
-    max_tokens: Optional[conint(ge=256, le=8192)] = Field(None, alias='max_gen_len')
+    max_tokens: Optional[conint(ge=256, le=8192)] = Field(None, alias="max_gen_len")
     temperature: Optional[confloat(ge=0.0, le=1.0)] = None
     top_k: Optional[conint(ge=0, le=500)] = None
     top_p: Optional[confloat(ge=0.0, le=500.0)] = None
@@ -21,6 +19,7 @@ class ModelKwargsBedrock(BaseModel):
 
     class Config:
         """Pydantic config for the model kwargs for the Bedrock model."""
+
         allow_population_by_field_name = True
 
 
