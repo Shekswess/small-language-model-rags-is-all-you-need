@@ -12,15 +12,17 @@ from ragas.llms import LangchainLLMWrapper
 from ragas.metrics.base import MetricWithEmbeddings, MetricWithLLM
 from ragas.run_config import RunConfig
 
+from src.constants import evaluation_config
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 warnings.filterwarnings("ignore")
 
-LLM_MODEL_ID = "anthropic.claude-3-5-sonnet-20240620-v1:0"
-LLM_MODEL_KWARGS = {"max_tokens": 4096, "temperature": 0.1}
-EMBEDDER_MODEL_ID = "amazon.titan-embed-text-v2:0"
-EMBEDDER_MODEL_KWARGS = {"dimensions": 512, "normalize": True}
+LLM_MODEL_ID = evaluation_config.LLM_MODEL_ID
+LLM_MODEL_KWARGS = evaluation_config.LLM_MODEL_KWARGS
+EMBEDDER_MODEL_ID = evaluation_config.EMBEDDER_MODEL_ID
+EMBEDDER_MODEL_KWARGS = evaluation_config.EMBEDDER_MODEL_KWARGS
 
 
 def _wrap_model(
