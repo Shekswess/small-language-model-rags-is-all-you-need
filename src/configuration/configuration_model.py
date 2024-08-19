@@ -1,4 +1,5 @@
 """Module for defining the structure of the configs for the RAG models."""
+
 import warnings
 from typing import Dict, List, Optional, Union
 
