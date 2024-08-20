@@ -1,0 +1,35 @@
+name: "Lint, Format and Auto Commit - Python"
+on: 
+    push:
+        branches: [main, develop]
+        paths:
+            - 'src/**/*.py'
+    pull_request:
+        branches: [main, develop]
+        paths:
+            - 'src/**/*.py'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest 
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v4
+
+    - name: Install ruff
+      run: pip install ruff
+
+    - name: Lint and Format
+      run: |
+        ruff check --fix
+        ruff format
+
+    - name: Auto Commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Code formatted with ruff"

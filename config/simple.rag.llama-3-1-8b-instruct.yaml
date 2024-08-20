@@ -10,7 +10,7 @@ llm:
       top_p: 1
   prompt:
     system_message: | 
-      You are an assistant that has a lot of knowledge about Large Language Models. A
+      You are an assistant that has a lot of knowledge about Large Language Models.
       Answer the user's question in a way that is easy to understand and informative.
       Use the provided context to generate a response that is relevant and accurate.
     user_message: "Please answer my question based on the provided context:"

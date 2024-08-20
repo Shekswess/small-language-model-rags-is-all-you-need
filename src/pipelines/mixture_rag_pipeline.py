@@ -8,9 +8,9 @@ import warnings
 
 from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
-from ragas.metrics import answer_relevancy, context_utilization, faithfulness
 
 from src.configuration.configuration_model import MixtureRAGConfig
+from src.constants import evaluation_config
 from src.models.mixture_rag import MixtureRAG
 from src.utils.evaluation import init_llm_n_metrics, score_output
 
@@ -19,40 +19,45 @@ logger = logging.getLogger(__name__)
 
 warnings.filterwarnings("ignore")
 
-METRICS = [faithfulness, answer_relevancy, context_utilization]
+PUBLIC_KEY = os.environ.get("LANGFUSE_PUBLIC_KEY")
+SECRET_KEY = os.environ.get("LANGFUSE_SECRET_KEY")
+HOST = os.environ.get("LANGFUSE_HOST")
+METRICS = evaluation_config.METRICS
 
 
 def mixture_rag_pipeline_execution(
     config: MixtureRAGConfig, rag_prompts: list, aggregator_prompt: str, questions: list
 ):
     """
-    Executes the SimpleRAG pipeline.
+    Executes the Mixture RAG pipeline.
 
     Args:
-        config (SimpleRAGConfig): The configuration for SimpleRAG.
+        config (MixtureRAGConfig): The configuration for Mixture RAG.
         prompt (str): The prompt to be used.
         questions (list): A list of questions to be processed.
 
     Returns:
         None
     """
+    logger.info("Starting Mixture RAG pipeline execution")
     logger.info("Creating Langfuse client")
     langfuse = Langfuse(
-        secret_key=os.environ["LANGFUSE_SECRET_KEY"],
-        public_key=os.environ["LANGFUSE_PUBLIC_KEY"],
-        host=os.environ["LANGFUSE_HOST"],
+        secret_key=SECRET_KEY,
+        public_key=PUBLIC_KEY,
+        host=HOST,
     )
 
     langfuse_handler = CallbackHandler(
-        secret_key=os.environ["LANGFUSE_SECRET_KEY"],
-        public_key=os.environ["LANGFUSE_PUBLIC_KEY"],
-        host=os.environ["LANGFUSE_HOST"],
+        secret_key=SECRET_KEY,
+        public_key=PUBLIC_KEY,
+        host=HOST,
         session_id=config.experiment_name,
     )
 
     logger.info("Initializing LLM and metrics for evaluation")
     init_llm_n_metrics(METRICS)
 
+    logger.info("Initializing Mixture RAG")
     mixture_rag = MixtureRAG(config)
     mixture_rag.initialize_base()
 
@@ -81,4 +86,4 @@ def mixture_rag_pipeline_execution(
         score_output(langfuse, trace_id, METRICS, question, contexts, answer)
         print(question, answer, contexts)
 
-    logger.info("MixtureRAG pipeline execution complete")
+    logger.info("Mixture RAG pipeline execution complete")

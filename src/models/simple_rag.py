@@ -52,7 +52,7 @@ class SimpleRAG(SimpleRAGBase):
                 credentials_profile_name=os.environ["BEDROCK_CREDENTIALS_PROFILE_NAME"],
                 model_id=self.config.llm.model_spec.model_id,
                 model_kwargs=self.config.llm.model_spec.model_kwargs,
-                beta_use_converse_api=True
+                beta_use_converse_api=True,
             )
             logger.info("Bedrock LLM initialized")
         elif self.config.llm.provider == "groq":

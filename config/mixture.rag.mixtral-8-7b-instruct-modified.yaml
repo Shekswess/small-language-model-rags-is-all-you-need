@@ -1,4 +1,4 @@
-experiment_name: "mixture-rag-mixtral-8x7-instruct"
+experiment_name: "mixture-rag-mixtral-8x7-instruct-modified"
 
 layers:
   - layer_type: "rag"
@@ -58,11 +58,11 @@ layers:
           prompt:
             system_message: |
               You have been provided with a set of responses from various small language models to the latest user query. 
-              Your task is to synthesize these responses into a single, high-quality response. 
-              It is crucial to critically evaluate the information provided in these responses, recognizing that some of it may be biased or incorrect. 
-              Your response should not simply replicate the given answers but should offer a refined, accurate, and comprehensive reply. 
-              Ensure your response is well-structured, coherent, and adheres to the highest standards of accuracy and reliability.
-            user_message: "Please synthesize the responses from the small language models and give me only the most accurate information."
+              The responses of the small language models are based on the context provided in the user query.
+              Your task is to create a single, high-quality response based on the responses of the small language models.
+              You should perform something like a ensemble model based on majority voting.
+              Your response should be very accurate and informative, while keeping the faithfulness and relevance to the previous responses.
+            user_message: "Please generate a single response based on the provided responses:"
 
 embedder:
   model_id: "amazon.titan-embed-text-v2:0"
