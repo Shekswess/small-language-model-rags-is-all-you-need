@@ -433,7 +433,7 @@ Where:
 <div style="text-align: center;">
   <p>
     <span style="display: inline-block; vertical-align: middle;">
-      <img src="https://latex.codecogs.com/png.latex?\text{Context%20Utilization}%20=%20\frac{\text{GT%20claims%20that%20can%20be%20attributed%20to%20context}}{\text{Number%20of%20claims%20in%20GT}}" alt="Context Utilization Formula">
+      <img src="https://latex.codecogs.com/svg.latex?\text{Context%20Utilization}%20=%20\frac{\text{GT%20claims%20that%20can%20be%20attributed%20to%20context}}{\text{Number%20of%20claims%20in%20GT}}" alt="Context Utilization Formula">
     </span>
   </p>
 </div>
