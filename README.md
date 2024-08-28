@@ -378,25 +378,51 @@ The metrics used for the evaluation of the experiments are:
 
 - **Faithfulness**: This measures the factual consistency of the generated answer against the given context. It is calculated from answer and retrieved context. The answer is scaled to (0,1) range. Higher the better. The generated answer is regarded as faithful if all the claims made in the answer can be inferred from the given context. To calculate this, a set of claims from the generated answer is first identified. Then each of these claims is cross-checked with the given context to determine if it can be inferred from the context.
 
+<div style = "text-align: center;">
+  <p>
+    <span style="display: inline-block; vertical-align: middle;">
+      <img src="https://latex.codecogs.com/png.latex?\text{Faithfullness}=\frac{\text{Number%20of%20claims%20in%20the%20generated%20answer%20that%20can%20be%20inferred%20from%20given%20context}}{\text{Total%20number%20of%20claims%20in%20the%20generated%20answer}}" alt="Faithfulness Formula">
+    </span>
+  </p>
+</div>
 
-\[
-\text{Faithfulness} = \frac{\text{Number of claims in the generated answer that can be inferred from given context}}{\text{Total number of claims in the generated answer}}
-\]
 
 - **Answer Relevancy**: The evaluation metric, Answer Relevancy, focuses on assessing how pertinent the generated answer is to the given prompt. A lower score is assigned to answers that are incomplete or contain redundant information and higher scores indicate better relevancy. This metric is computed using the question, the context and the answer. The Answer Relevancy is defined as the mean cosine similarity of the original question to a number of artifical questions, which where generated (reverse engineered) based on the answer:
 
-\[
-\text{Answer Relevancy} = \frac{1}{N} \sum_{i=1}^{N} \cos(E_{g_i}, E_o)
-\]
+<div style="text-align: center;">
+  <p>
+    <span style="display: inline-block; vertical-align: middle;">
+      <img src="https://latex.codecogs.com/png.latex?\text{Answer%20Relevancy}%20=%20\frac{1}{N}%20\sum_{i=1}^{N}%20\cos(E_{g_i},%20E_o)" alt="Answer Relevancy Formula 1">
+    </span>
+  </p>
 
-\[
-\text{Answer Relevancy} = \frac{1}{N} \sum_{i=1}^{N} \frac{E_{g_i} \cdot E_o}{\|E_{g_i}\| \|E_o\|}
-\]
+  <p>
+    <span style="display: inline-block; vertical-align: middle;">
+      <img src="https://latex.codecogs.com/png.latex?\text{Answer%20Relevancy}%20=%20\frac{1}{N}%20\sum_{i=1}^{N}%20\frac{E_{g_i}%20\cdot%20E_o}{\|E_{g_i}\|\%20\|E_o\|}" alt="Answer Relevancy Formula 2">
+    </span>
+  </p>
+</div>
 
 Where:
-- \(E_{g_i}\) is the embedding of the \(i^{th}\) artificial question generated from the answer.
-- \(E_o\) is the embedding of the original question.
-- \(N\) is the number of artificial questions generated from the answer.
+<div>
+  <p>
+    - <span style="display: inline-block; vertical-align: middle;">
+      <img src="https://latex.codecogs.com/png.latex?E_{g_i}" alt="E_{g_i}"> is the embedding of the <img src="https://latex.codecogs.com/png.latex?i^{\text{th}}" alt="i^{th}"> artificial question generated from the answer.
+    </span>
+  </p>
+
+  <p>
+    - <span style="display: inline-block; vertical-align: middle;">
+      <img src="https://latex.codecogs.com/png.latex?E_o" alt="E_o"> is the embedding of the original question.
+    </span>
+  </p>
+
+  <p>
+    - <span style="display: inline-block; vertical-align: middle;">
+      <img src="https://latex.codecogs.com/png.latex?N" alt="N"> is the number of artificial questions generated from the answer.
+    </span>
+  </p>
+</div>
 
 > [!NOTE]
 > Eventhough in practice the score will range between 0 and 1 most of the time, this is not mathematically guranteed, due to the nature of the cosine similarity ranging from -1 to 1.
@@ -404,9 +430,13 @@ Where:
 
 - **Context Utilization**: Context utilization measures the extent to which the retrieved context aligns with the annotated answer, treated as the ground truth. It is computed using question, ground truth and the retrieved context, and the values range between 0 and 1, with higher values indicating better performance. To estimate context utilization from the ground truth answer, each claim in the ground truth answer is analyzed to determine whether it can be attributed to the retrieved context or not. In an ideal scenario, all claims in the ground truth answer should be attributable to the retrieved context. If the ground truth is not provided, the judge evaluator LLM is used to generate the ground truth answer.
 
-\[
-\text{Context Utilization} = \frac{\text{GT claims that can be attributed to context}}{\text{Number of claims in GT}}
-\]
+<div style="text-align: center;">
+  <p>
+    <span style="display: inline-block; vertical-align: middle;">
+      <img src="https://latex.codecogs.com/png.latex?\text{Context%20Utilization}%20=%20\frac{\text{GT%20claims%20that%20can%20be%20attributed%20to%20context}}{\text{Number%20of%20claims%20in%20GT}}" alt="Context Utilization Formula">
+    </span>
+  </p>
+</div>
 
 #### Judge LLM and Embedder
 For Judge LLM Evaluator it is worked with Claude 3.5 Sonnet model and the Amazon Titan Embed Text 2 model with 512 dimensions. The configuration for the Judge LLM and Embedder can be found in the `src/constants/evaluation_config.py` file.
