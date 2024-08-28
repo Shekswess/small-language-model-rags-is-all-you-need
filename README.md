@@ -378,10 +378,10 @@ The metrics used for the evaluation of the experiments are:
 
 - **Faithfulness**: This measures the factual consistency of the generated answer against the given context. It is calculated from answer and retrieved context. The answer is scaled to (0,1) range. Higher the better. The generated answer is regarded as faithful if all the claims made in the answer can be inferred from the given context. To calculate this, a set of claims from the generated answer is first identified. Then each of these claims is cross-checked with the given context to determine if it can be inferred from the context.
 
-<div style = "text-align: center;">
+<div style="text-align: center;">
   <p>
     <span style="display: inline-block; vertical-align: middle;">
-      <img src="https://latex.codecogs.com/png.latex?\text{Faithfullness}=\frac{\text{Number%20of%20claims%20in%20the%20generated%20answer%20that%20can%20be%20inferred%20from%20given%20context}}{\text{Total%20number%20of%20claims%20in%20the%20generated%20answer}}" alt="Faithfulness Formula">
+      <img src="https://latex.codecogs.com/svg.latex?\color{white}\text{Faithfulness}=\frac{\text{Number%20of%20claims%20in%20the%20generated%20answer%20that%20can%20be%20inferred%20from%20given%20context}}{\text{Total%20number%20of%20claims%20in%20the%20generated%20answer}}" alt="Faithfulness Formula">
     </span>
   </p>
 </div>
@@ -392,13 +392,13 @@ The metrics used for the evaluation of the experiments are:
 <div style="text-align: center;">
   <p>
     <span style="display: inline-block; vertical-align: middle;">
-      <img src="https://latex.codecogs.com/png.latex?\text{Answer%20Relevancy}%20=%20\frac{1}{N}%20\sum_{i=1}^{N}%20\cos(E_{g_i},%20E_o)" alt="Answer Relevancy Formula 1">
+      <img src="https://latex.codecogs.com/svg.latex?\color{white}\text{Answer%20Relevancy}%20=%20\frac{1}{N}%20\sum_{i=1}^{N}%20\cos(E_{g_i},%20E_o)" alt="Answer Relevancy Formula 1">
     </span>
   </p>
 
   <p>
     <span style="display: inline-block; vertical-align: middle;">
-      <img src="https://latex.codecogs.com/png.latex?\text{Answer%20Relevancy}%20=%20\frac{1}{N}%20\sum_{i=1}^{N}%20\frac{E_{g_i}%20\cdot%20E_o}{\|E_{g_i}\|\%20\|E_o\|}" alt="Answer Relevancy Formula 2">
+      <img src="https://latex.codecogs.com/svg.latex?\color{white}\text{Answer%20Relevancy}%20=%20\frac{1}{N}%20\sum_{i=1}^{N}%20\frac{E_{g_i}%20\cdot%20E_o}{\|E_{g_i}\|\%20\|E_o\|}" alt="Answer Relevancy Formula 2">
     </span>
   </p>
 </div>
@@ -407,19 +407,19 @@ Where:
 <div>
   <p>
     - <span style="display: inline-block; vertical-align: middle;">
-      <img src="https://latex.codecogs.com/png.latex?E_{g_i}" alt="E_{g_i}"> is the embedding of the <img src="https://latex.codecogs.com/png.latex?i^{\text{th}}" alt="i^{th}"> artificial question generated from the answer.
+      <img src="https://latex.codecogs.com/svg.latex?\color{white}E_{g_i}" alt="E_{g_i}"> is the embedding of the <img src="https://latex.codecogs.com/svg.latex?\color{white}i^{\text{th}}" alt="i^{th}"> artificial question generated from the answer.
     </span>
   </p>
 
   <p>
     - <span style="display: inline-block; vertical-align: middle;">
-      <img src="https://latex.codecogs.com/png.latex?E_o" alt="E_o"> is the embedding of the original question.
+      <img src="https://latex.codecogs.com/svg.latex?\color{white}E_o" alt="E_o"> is the embedding of the original question.
     </span>
   </p>
 
   <p>
     - <span style="display: inline-block; vertical-align: middle;">
-      <img src="https://latex.codecogs.com/png.latex?N" alt="N"> is the number of artificial questions generated from the answer.
+      <img src="https://latex.codecogs.com/svg.latex?\color{white}N" alt="N"> is the number of artificial questions generated from the answer.
     </span>
   </p>
 </div>
@@ -433,7 +433,7 @@ Where:
 <div style="text-align: center;">
   <p>
     <span style="display: inline-block; vertical-align: middle;">
-      <img src="https://latex.codecogs.com/svg.latex?\text{Context%20Utilization}%20=%20\frac{\text{GT%20claims%20that%20can%20be%20attributed%20to%20context}}{\text{Number%20of%20claims%20in%20GT}}" alt="Context Utilization Formula">
+      <img src="https://latex.codecogs.com/svg.latex?\color{white}\text{Context%20Utilization}%20=%20\frac{\text{GT%20claims%20that%20can%20be%20attributed%20to%20context}}{\text{Number%20of%20claims%20in%20GT}}" alt="Context Utilization Formula">
     </span>
   </p>
 </div>
