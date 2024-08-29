@@ -662,7 +662,7 @@ The table above ranks various experiments based on their context utilization sco
 The table above ranks various experiments based on their average scores, which provide a comprehensive view of the experiments' performance across all metrics. The results show the dominance of RAG systems based on smaller language models, with 9 of the top 14 experiments being based on smaller models.
 
 
-### Conclussion
+### Conclusion
 
 The analysis of various experiments comparing RAG (Retrieval-Augmented Generation) systems based on different language models yields several significant insights:
 
