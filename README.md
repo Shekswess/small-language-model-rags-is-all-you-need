@@ -257,48 +257,100 @@ python extract_results.py
 9. The results will be saved in the `results` folder and you can analyze them.
 
 
-## Experiments
+## Setup
 
-In total there were 28 experiments both with Simple RAG and Mixture RAG pipelines.
+In this section, we will provide an overview of the dataset used for the experiments and the RAG pipeline setup. In total there were 28 experiments both with Simple RAG and Mixture RAG pipelines.
 
 ### Dataset
 
-The dataset used for the experiments is a collection of research papers in the field of Natural Language Processing (NLP), to be exact in the field of Large Language Models (LLMs). The dataset consists of 14 most cited papers in the field of NLP and LLMs. Questions from these papers were used as the evaluation dataset for the experiments.
+The dataset used for the experiments is a collection of research papers in the field of Natural Language Processing (NLP), specifically focusing on Large Language Models (LLMs). The dataset consists of the 14 most cited papers in the field of NLP and LLMs. The papers included in the dataset are:
 
-### Experimental Pipeline Setup
+1. **BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding**
+2. **The Claude 3 Model Family: Opus, Sonnet, Haiku**
+3. **Gemma: Open Models Based on Gemini Research and Technology**
+4. **Gemma 2: Improving Open Language Models at a Practical Size**
+5. **Improving Language Understanding by Generative Pre-Training**
+6. **Language Models are Few-Shot Learners**
+7. **GPT-4 Technical Report**
+8. **LLaMA: Open and Efficient Foundation Language Models**
+9. **Llama 2: Open Foundation and Fine-Tuned Chat Models**
+10. **The Llama 3 Herd of Models**
+11. **Mistral 7B**
+12. **Mixtral of Experts**
+13. **Mixture-of-Agents Enhances Large Language Model Capabilities**
+14. **Attention Is All You Need**
+
+Questions from these papers were used as the evaluation dataset for the experiments. The questions included in the evaluation dataset are:
+
+1. **"What are the two tasks in BERT?"**
+2. **"Does Claude 3 models have vision capabilities?"**
+3. **"On what architecture the Gemma model is based on?"**
+4. **"What tokenizer is used in the Gemma2 model?"**
+5. **"How many stages of training are in the GPT model?"**
+6. **"On what architecture the GPT-3 model is based on?"**
+7. **"Can the GPT-4 model accept both text and image inputs?"**
+8. **"What optimizer is used for LLaMA?"**
+9. **"What is the difference between the Llama 2 and Llama 2-Chat?"**
+10. **"How many stages are there in the development of the Llama 3 model?"**
+11. **"What is sliding window attention?"**
+12. **"Is Mixtral based on the idea of a mixture of experts?"**
+13. **"What is Mixture of Agents?"**
+14. **"How can attention be described in the Transformer?"**
+
+### RAG Pipeline Setup
 
 All the experimental pipelines share these common components:
 - **Chunker**: The dataset is chunked into smaller parts to be used for the experiments. The chunk size is 1500 and the chunk overlap is 100.
-- **Embedder**: The Amazon Titan Embed Text model is used to embed the chunks of the dataset, with 512 vector dimensions.
+- **Embedder**: The Amazon Titan Embed Text model is used to embed the chunks of the dataset, with 512 vector dimensions which are normalized.
 - **Vector Store**: The embedded vectors are stored in a FAISS vector database for faster retrieval.
 - **Retriever**: The retrieval of the most similar chunks is done using the FAISS vector database. The number of similar chunks retrieved is 5 and the search type is similarity.
 
 The experimental pipelines differ in the LLMs used and the way of the LLMs are used/combined.
 
 The LLM used in the pipelines are:
-- gemma2-9b-it
-- gemma-7b-it
-- mistral-7b-instruct
-- mixtral-8x7b-instruct
-- llama-3-8b-instruct
-- llama-3.1-8b-instruct
-- llama-3-70b-instruct
-- llama-3.1-70b-instruct
-- llama-3.1-405b-instruct
-- claude-3-haiku
-- claude-3-sonnet
-- claude-3-opus
-- claude-3-5-sonnet
-- gpt-4o
-- gpt-4o-mini
-- gpt-4-turbo
+- **gemma2-9b-it** - Small LLM
+- **gemma-7b-it** - Small LLM
+- **mistral-7b-instruct** - Small LLM
+- **mixtral-8x7b-instruct** - Small LLM
+- **llama-3-8b-instruct** - Small LLM
+- **llama-3.1-8b-instruct** - Small LLM
+- **llama-3-70b-instruct** - Large LLM
+- **llama-3.1-70b-instruct** - Large LLM
+- **llama-3.1-405b-instruct** - Large LLM
+- **claude-3-haiku** - Small LLM
+- **claude-3-sonnet** - Large LLM
+- **claude-3-opus** - Large LLM
+- **claude-3-5-sonnet** - Large LLM
+- **gpt-4o** - Large LLM
+- **gpt-4o-mini** - Large LLM
+- **gpt-4-turbo** - Large LLM
 
 Each of the LLMs have specific instruction prompt templates that are used for the experiments. Those templates can be found on:
 - [Prompts Engineering Guide](https://www.promptingguide.ai/)
 - [Ollama](https://ollama.ai/)
 - [Anthropic Prompt Engineering](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
 
+All of the LLMs that are used in the RAG pipelines have the same parameters:
+
+- **temperature**: 0.1
+  - In short, the lower the temperature, the more deterministic the results in the sense that the highest probable next token is always picked. Increasing temperature could lead to more randomness, which encourages more diverse or creative outputs. You are essentially increasing the weights of the other possible tokens. In terms of application, you might want to use a lower temperature value for tasks like fact-based QA to encourage more factual and concise responses. For poem generation or other creative tasks, it might be beneficial to increase the temperature value.
+
+- **max_tokens**: 4096
+  - This parameter sets the maximum number of tokens that the model can generate in a single response. It ensures that the output does not exceed a certain length, which is useful for controlling the verbosity of the responses.
+
+- **top_p**: 1
+  - A sampling technique with temperature, called nucleus sampling, where you can control how deterministic the model is. If you are looking for exact and factual answers keep this low. If you are looking for more diverse responses, increase to a higher value. If you use Top P it means that only the tokens comprising the top_p probability mass are considered for responses, so a low top_p value selects the most confident responses. This means that a high top_p value will enable the model to look at more possible words, including less likely ones, leading to more diverse outputs.
+
+- **top_k**: 250
+  - This parameter limits the sampling pool to the top_k most probable tokens. A lower value makes the model more deterministic by considering fewer options, while a higher value allows for more diversity by considering a larger pool of tokens.
+
+We utilized two different RAG pipeline configurations for the experiments:
+- **Simple RAG Pipeline**: Uses a single LLM to generate the responses.
+- **Mixture RAG Pipeline**: Uses multiple LLMs to generate the responses, which are then aggregated by another LLM.
+
 All of the prompts used in the experiments are stored in the `src/constants/prompts.py` file.
+
+Let's dive into the details of each pipeline configuration.
 
 #### Simple RAG Pipeline
 
@@ -368,11 +420,13 @@ user_message: "Please choose a single response based on the provided responses:"
 
 All the configurations for the experiments can be found in the `src/config` folder.
 
-### Results and Conclusion
+## Methodology
+
+ll the results are based on the evaluation of the experiments using the evaluation dataset. In this section, we will present the results of the experiments and analyze the performance of the RAG systems based on different language models. The evaluation metrics used for the analysis are faithfulness, answer relevancy, and context utilization. For calculating the metrics, the judge evaluator LLM and Embedder are used to generate the ground truth answers and to calculate the scores.
 
 For the experiments, the results are stored in a CSV file in the `results` folder. Those results are extracted from the Langfuse Server which contain detailed traces and metrics for each experiment. The results are extracted using the `extract_results.py` script.
 
-#### Metrics
+### Metrics
 
 The metrics used for the evaluation of the experiments are:
 
@@ -438,18 +492,19 @@ Where:
   </p>
 </div>
 
-#### Judge LLM and Embedder
-For Judge LLM Evaluator it is worked with Claude 3.5 Sonnet model and the Amazon Titan Embed Text 2 model with 512 dimensions. The configuration for the Judge LLM and Embedder can be found in the `src/constants/evaluation_config.py` file.
+### Judge LLM and Embedder
 
+For the Judge LLM Evaluator, we utilized the Claude 3.5 Sonnet model with the model ID `anthropic.claude-3-5-sonnet-20240620-v1:0`. This model was configured with a maximum token limit of 4096 and a temperature setting of 0.1 to control the randomness of the output. Additionally, we employed the Amazon Titan Embed Text 2 model with the model ID `amazon.titan-embed-text-v2:0`, which operates with 512 dimensions and normalization enabled. 
+The configuration for the Judge LLM and Embedder can be found in the `src/constants/evaluation_config.py` file.
 
-#### Analysis of the Results
-
+### Results and Analysis
 
 The initial exploration of the results focused on identifying problematic questions, specifically those with lower scores. The objective was to refine the experiments by excluding these less effective questions and concentrating on the 10 most relevant ones. This approach aims to enhance the overall quality and reliability of the experiments by ensuring that only the most pertinent questions and answers are considered.
 
 To identify these problematic questions, the dataset was grouped by individual questions. For each question, the mean scores were calculated across three key metrics: faithfulness, answer relevancy, and context utilization. These mean scores provided a comprehensive view of each question's performance. Subsequently, an overall average score was computed for each question by taking the basic average of the mean scores from the three metrics. This overall score was then used to rank the questions, allowing for an informed decision on which questions to exclude from the experiments.
 
-<h4>Questions with the lowest scores</h4>
+#### Questions with the lowest scores
+
 <table>
   <thead>
     <tr>
@@ -481,7 +536,8 @@ From the table, we can observe which questions have the lowest scores. Specifica
 
 The next step involves a detailed analysis of the results for each experiment. This analysis includes ranking the experiments based on the average scores for each metric: faithfulness, answer relevancy, and context utilization. For clarity and comprehensiveness, the top 14 experiments for each metric are highlighted and presented below. Additionally, an overall ranking is conducted by calculating the average of the average scores across all metrics. This comprehensive ranking provides a holistic view of the experiments' performance, facilitating a more informed evaluation and comparison.
 
-<h4>Faithfulness</h4>
+#### Faithfulness
+
 <table>
   <thead>
     <tr>
@@ -512,7 +568,8 @@ The table above ranks various experiments based on their faithfulness scores, wh
 
 This observation suggests that smaller language models can perform nearly as well as, or sometimes better than, larger models in terms of faithfulness. The close scores among the top experiments indicate that model architecture and training strategies play a significant role in achieving high faithfulness, regardless of the model size. This insight is valuable for guiding future improvements and optimizations in model development, as it highlights the potential of smaller models to deliver high-quality results, results that are faithful to the context and source information provided.
 
-<h4>Answer Relevancy</h4>
+#### Answer Relevancy
+
 <table>
   <thead>
     <tr>
@@ -544,7 +601,8 @@ The table above ranks various experiments based on their answer relevancy scores
 This again indicates that smaller language models can generate highly relevant responses that are closely aligned with the given prompts. We can even see that the mixture rag pipeline approach with the smart technique of choosing the best response from the generated responses(thought) can achieve high answer relevancy scores. 
 
 
-<h4>Context Utilization</h4>
+#### Context Utilization
+
 <table>
   <thead>
     <tr>
@@ -573,7 +631,8 @@ This again indicates that smaller language models can generate highly relevant r
 
 The table above ranks various experiments based on their context utilization scores, which measure how effectively the retrieved context aligns with the annotated answers. Here really we can see how RAG systems based on smaller language models are performing really well in terms of context utilization. From the best 14 experiments, 11 of them are based on smaller language models. Another interesting thing is that mixture RAG approaches are excellent in context utilization, with 3 of the top 5 experiments being based on the mixture RAG approach. The experiments `mixture-rag-llama3.1-8b-instruct`, `mixture-rag-mixtral-8x7-instruct-modified`, and `mixture-rag-mixtral-8x7-instruct` have context utilization scores of 0.916667, 0.916667, and 0.913889 respectively.
 
-<h4>Average of the Average Scores</h4>
+#### Average of the Scores
+
 <table>
   <thead>
     <tr>
@@ -603,7 +662,7 @@ The table above ranks various experiments based on their context utilization sco
 The table above ranks various experiments based on their average scores, which provide a comprehensive view of the experiments' performance across all metrics. The results show the dominance of RAG systems based on smaller language models, with 9 of the top 14 experiments being based on smaller models.
 
 
-#### Conclussion
+### Conclussion
 
 The analysis of various experiments comparing RAG (Retrieval-Augmented Generation) systems based on different language models yields several significant insights:
 
