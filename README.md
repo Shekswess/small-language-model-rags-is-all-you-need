@@ -661,6 +661,44 @@ The table above ranks various experiments based on their context utilization sco
 
 The table above ranks various experiments based on their average scores, which provide a comprehensive view of the experiments' performance across all metrics. The results show the dominance of RAG systems based on smaller language models, with 9 of the top 14 experiments being based on smaller models.
 
+Here are some examples questions and answers from the experiments from the table above:
+
+```plaintext
+mixture-rag-gemma2-9b-it-thought
+
+Question: "Does Claude 3 models have vision capabilities?"
+
+Answer: "Yes, Claude 3 models have vision capabilities. According to the text, they can recognize and identify objects visually, and they can think in complex ways, such as understanding both an object's appearance and its connections to concepts like mathematics. Additionally, the text mentions that Claude 3 models can process images, including tables, graphs, and photos, and can even generate text from images with hard-to-read handwriting"
+```
+
+```plaintext
+mixture-rag-gemma2-9b-it-modified
+
+Question: "Does Claude 3 models have vision capabilities?"
+
+Answer: "Yes, Claude 3 models possess vision capabilities. 
+
+They can recognize and identify objects visually, understanding not only their appearance but also their connections to concepts like mathematics.  This allows them to process images, including tables, graphs, and photos, and even generate text from images with hard-to-read handwriting. 
+
+Furthermore, Claude 3 models can accept multimodal input, meaning they can process both text and images together. This expands their capabilities and allows for richer context in understanding user requests. 
+
+It's important to note, however, that the performance of these models may be less robust for low-resource languages and they might generate inaccurate information about images. Therefore, for critical applications requiring high precision and accuracy, human validation is recommended."
+```
+
+```plaintext
+simple-rag-gemma2-9b-it
+
+Question: "Does Claude 3 models have vision capabilities?"
+
+Answer: "Yes, Claude 3 models have vision capabilities. 
+
+The text states: "Claude 3 models can recognize and identify objects visually, and they can think in complex ways, such as understanding both an object’s appearance and its connections to concepts like mathematics." 
+
+It also mentions that Claude 3 Haiku, one of the models in the family, includes vision capabilities."
+```
+
+It can be seen that all of the answers are relevant and informative but the Mixture RAG approach with thought technique is providing the most concise and informative answer. This is a great example of how the Mixture RAG approach can enhance the performance of the RAG system by aggregating responses from multiple smaller language models and selecting the best one.
+
 
 ### Conclusion
 
