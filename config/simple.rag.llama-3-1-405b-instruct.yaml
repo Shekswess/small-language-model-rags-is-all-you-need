@@ -1,4 +1,4 @@
-experiment_name: "simple-rag-llama-3.1-405b-instruct"
+experiment_name: "simple-rag-llama-3.1-405b-instruct-corrected"
 
 llm:
   provider: "bedrock" 
@@ -6,8 +6,8 @@ llm:
     model_id: "meta.llama3-1-405b-instruct-v1:0"
     model_kwargs: 
       max_tokens: 4096
-      temperature: 0.1
-      top_p: 1
+      temperature: 0
+      top_p: 0
   prompt:
     system_message: | 
       You are an assistant that has a lot of knowledge about Large Language Models.

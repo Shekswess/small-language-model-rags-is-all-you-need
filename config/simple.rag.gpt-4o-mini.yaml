@@ -1,10 +1,10 @@
-experiment_name: "simple-rag-gpt-4o-mini"
+experiment_name: "simple-rag-gpt-4o-mini-corrected"
 
 llm:
   provider: "openai"
   model_spec:
     model: "gpt-4o-mini"
-    temperature: 0.1
+    temperature: 0
     max_tokens: 4096
   prompt:
     system_message: | 

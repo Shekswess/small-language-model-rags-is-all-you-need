@@ -1,4 +1,4 @@
-experiment_name: "simple-rag-mixtral-8x7b-instruct"
+experiment_name: "simple-rag-mixtral-8x7b-instruct-corrected"
 
 llm:
   provider: "bedrock" 
@@ -6,8 +6,8 @@ llm:
     model_id: "mistral.mixtral-8x7b-instruct-v0:1"
     model_kwargs: 
       max_tokens: 4096
-      temperature: 0.1
-      top_p: 1
+      temperature: 0
+      top_p: 0
   prompt:
     system_message: | 
       You are an assistant that has a lot of knowledge about Large Language Models.
