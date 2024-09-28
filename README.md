@@ -498,7 +498,7 @@ Where:
 
 ### Judge LLM and Embedder
 
-For the Judge LLM Evaluator, we utilized the Claude 3.5 Sonnet model with the model ID `anthropic.claude-3-5-sonnet-20240620-v1:0`. This model was configured with a maximum token limit of 4096 and a temperature setting of 0.1 to control the randomness of the output. Additionally, we employed the Amazon Titan Embed Text 2 model with the model ID `amazon.titan-embed-text-v2:0`, which operates with 512 dimensions and normalization enabled. 
+For the Judge LLM Evaluator, we utilized the Claude 3.5 Sonnet model with the model ID `anthropic.claude-3-5-sonnet-20240620-v1:0`. This model was configured with a maximum token limit of 4096 and a temperature setting of 0 to control the randomness of the output. Additionally, we employed the Amazon Titan Embed Text 2 model with the model ID `amazon.titan-embed-text-v2:0`, which operates with 512 dimensions and normalization enabled. 
 The configuration for the Judge LLM and Embedder can be found in the `src/constants/evaluation_config.py` file.
 
 ### Monitoring the RAGs and Traces (Tracebility & Observability)
