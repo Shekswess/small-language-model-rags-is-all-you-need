@@ -8,6 +8,7 @@ QUESTIONS = [
     "How many stages of training are in the GPT model?",
     "On what architecture the GPT-3 model is based on?",
     "Can the GPT-4 model accept both text and image inputs?",
+    "What is the GPT-4o model?",
     "What is optimizer is used for LLaMA?",
     "What is the difference between the Llama 2 and Llama 2-Chat ?",
     "How many stages are there in the development of the Llama 3 model?",

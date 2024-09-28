@@ -48,15 +48,19 @@ def fetch_session_ids(client: Langfuse) -> list[str]:
         client (Langfuse): The Langfuse client.
 
     Returns:
-        List[str]: The session IDs.
+        sessions_ids_corrected (List[str]): The session IDs.
     """
-    return [
+    sessions_ids = [
         session_id.id
         for session_id in client.fetch_sessions().data
         if "mixture-rag" in session_id.id
         or "simple-rag" in session_id.id
         and "simple-rag-mixtral-8x7b" != session_id.id
     ]
+    sessions_ids_corrected = [
+        session_id for session_id in sessions_ids if "corrected" in session_id
+    ]
+    return sessions_ids_corrected
 
 
 def fetch_traces(client: Langfuse, local_session_ids: list[str]) -> list:

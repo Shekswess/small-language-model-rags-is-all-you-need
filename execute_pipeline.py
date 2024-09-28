@@ -20,14 +20,18 @@ logger = logging.getLogger(__name__)
 
 warnings.filterwarnings("ignore")
 
-CONFIG_PATH = "/home/bojan/Work/mixture-of-rags/config/simple.rag.example.yaml"
+CONFIG_PATH = (
+    "/home/bojan/Work/mixture-of-rags/config/mixture.rag.claude-3-haiku-modified.yaml"
+)
 PROMPT_CONSTANTS = [
     prompts.GEMMA_PROMPT_RAG_SIMPLE,
+    # prompts.CLAUDE_3_PROMPT_RAG_SIMPLE,
     prompts.MISTRAL_7B_PROMPT_RAG_SIMPLE,
     prompts.LLAMA_3_PROMPT_RAG_SIMPLE,
 ]
 PROMPT_AGGREGATOR_CONSTANT = prompts.CLAUDE_3_MIXTURE_RAG
 QUESTIONS_CONSTANT = questions.QUESTIONS
+
 
 if __name__ == "__main__":
     logger.info("Loading configuration")

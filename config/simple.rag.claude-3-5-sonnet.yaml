@@ -1,4 +1,4 @@
-experiment_name: "simple-rag-claude-3.5-sonnet"
+experiment_name: "simple-rag-claude-3.5-sonnet-corrected"
 
 llm:
   provider: "bedrock" 
@@ -6,9 +6,8 @@ llm:
     model_id: "anthropic.claude-3-5-sonnet-20240620-v1:0"
     model_kwargs: 
       max_tokens: 4096
-      temperature: 0.1
-      top_k: 250
-      top_p: 1
+      temperature: 0
+      top_p: 0
       stop_sequences: ["\n\nHuman"]
   prompt:
     system_message: | 

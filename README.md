@@ -57,9 +57,8 @@ llm:
     model_id: "anthropic.claude-3-haiku-20240307-v1:0"
     model_kwargs: 
       max_tokens: 4096
-      temperature: 0.1
-      top_k: 250
-      top_p: 1
+      temperature: 0
+      top_p: 0
       stop_sequences: ["\n\nHuman"]
   prompt:
     system_message: "Act like a Machine Learning Teacher"
@@ -100,9 +99,8 @@ layers:
             model_id: "anthropic.claude-3-haiku-20240307-v1:0"
             model_kwargs:
               max_tokens: 4096
-              temperature: 0.1
-              top_k: 500
-              top_p: 1
+              temperature: 0
+              top_p: 0
               stop_sequences: ["\n\nHuman"]
           prompt:
             system_message: "Act like a Machine Learning Expert"
@@ -111,7 +109,7 @@ layers:
           provider: "groq"
           model_spec:
             model_name: "mixtral-8x7b-32768"
-            temperature: 0.1
+            temperature: 0
             max_tokens: 4096
           prompt:
             system_message: "Act like a Machine Learning Beginner"
@@ -120,7 +118,7 @@ layers:
           provider: "groq"
           model_spec:
             model_name: "mixtral-8x7b-32768"
-            temperature: 0.1
+            temperature: 0
             max_tokens: 4096
           prompt:
             system_message: "Act like a Machine Learning Teacher"
@@ -131,7 +129,7 @@ layers:
           provider: "openai"
           model_spec:
             model: "gpt-4o"
-            temperature: 0.1
+            temperature: 0
             max_tokens: 4096
           prompt:
             system_message: |
@@ -263,7 +261,7 @@ In this section, we will provide an overview of the dataset used for the experim
 
 ### Dataset
 
-The dataset used for the experiments is a collection of research papers in the field of Natural Language Processing (NLP), specifically focusing on Large Language Models (LLMs). The dataset consists of the 14 most cited papers in the field of NLP and LLMs. The papers included in the dataset are:
+The dataset used for the experiments is a collection of research papers in the field of Natural Language Processing (NLP), specifically focusing on Large Language Models (LLMs). The dataset consists of the 15 most cited papers in the field of NLP and LLMs. The papers included in the dataset are:
 
 1. **BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding**
 2. **The Claude 3 Model Family: Opus, Sonnet, Haiku**
@@ -272,13 +270,14 @@ The dataset used for the experiments is a collection of research papers in the f
 5. **Improving Language Understanding by Generative Pre-Training**
 6. **Language Models are Few-Shot Learners**
 7. **GPT-4 Technical Report**
-8. **LLaMA: Open and Efficient Foundation Language Models**
-9. **Llama 2: Open Foundation and Fine-Tuned Chat Models**
-10. **The Llama 3 Herd of Models**
-11. **Mistral 7B**
-12. **Mixtral of Experts**
-13. **Mixture-of-Agents Enhances Large Language Model Capabilities**
-14. **Attention Is All You Need**
+8. **GPT-4o System Card**
+9. **LLaMA: Open and Efficient Foundation Language Models**
+10. **Llama 2: Open Foundation and Fine-Tuned Chat Models**
+11. **The Llama 3 Herd of Models**
+12. **Mistral 7B**
+13. **Mixtral of Experts**
+14. **Mixture-of-Agents Enhances Large Language Model Capabilities**
+15. **Attention Is All You Need**
 
 Questions from these papers were used as the evaluation dataset for the experiments. The questions included in the evaluation dataset are:
 
@@ -289,13 +288,16 @@ Questions from these papers were used as the evaluation dataset for the experime
 5. **"How many stages of training are in the GPT model?"**
 6. **"On what architecture the GPT-3 model is based on?"**
 7. **"Can the GPT-4 model accept both text and image inputs?"**
-8. **"What optimizer is used for LLaMA?"**
-9. **"What is the difference between the Llama 2 and Llama 2-Chat?"**
-10. **"How many stages are there in the development of the Llama 3 model?"**
-11. **"What is sliding window attention?"**
-12. **"Is Mixtral based on the idea of a mixture of experts?"**
-13. **"What is Mixture of Agents?"**
-14. **"How can attention be described in the Transformer?"**
+8. **"What is GPT-4o model?"**
+9. **"What optimizer is used for LLaMA?"**
+10. **"What is the difference between the Llama 2 and Llama 2-Chat?"**
+11. **"How many stages are there in the development of the Llama 3 model?"**
+12. **"What is sliding window attention?"**
+13. **"Is Mixtral based on the idea of a mixture of experts?"**
+14. **"What is Mixture of Agents?"**
+15. **"How can attention be described in the Transformer?"**
+
+The creation of the evaluation dataset (questions) was done by extracting the questions which capture the essence of the papers. The questions were selected based on their relevance to the content of the papers and their potential to evaluate the performance of the RAG systems. The questions were designed to test the faithfulness, answer relevancy, and context utilization of the RAG systems, providing a comprehensive evaluation of their capabilities.
 
 ### RAG Pipeline Setup
 
@@ -325,6 +327,9 @@ The LLM used in the pipelines are:
 - **gpt-4o-mini** - Large LLM
 - **gpt-4-turbo** - Large LLM
 
+> [!IMPORTANT]
+> The LLMs used in the experiments are from different providers like AWS Bedrock, Groq, and OpenAI. All the experiments were done on 27th and 28th of September 2024, so the results may vary if the experiments are run on different dates, because the versions of the models may change if they are trained again on newer data.
+
 Each of the LLMs have specific instruction prompt templates that are used for the experiments. Those templates can be found on:
 - [Prompts Engineering Guide](https://www.promptingguide.ai/)
 - [Ollama](https://ollama.ai/)
@@ -332,17 +337,14 @@ Each of the LLMs have specific instruction prompt templates that are used for th
 
 All of the LLMs that are used in the RAG pipelines have the same parameters:
 
-- **temperature**: 0.1
+- **temperature**: 0
   - In short, the lower the temperature, the more deterministic the results in the sense that the highest probable next token is always picked. Increasing temperature could lead to more randomness, which encourages more diverse or creative outputs. You are essentially increasing the weights of the other possible tokens. In terms of application, you might want to use a lower temperature value for tasks like fact-based QA to encourage more factual and concise responses. For poem generation or other creative tasks, it might be beneficial to increase the temperature value.
 
 - **max_tokens**: 4096
   - This parameter sets the maximum number of tokens that the model can generate in a single response. It ensures that the output does not exceed a certain length, which is useful for controlling the verbosity of the responses.
 
-- **top_p**: 1
+- **top_p**: 0
   - A sampling technique with temperature, called nucleus sampling, where you can control how deterministic the model is. If you are looking for exact and factual answers keep this low. If you are looking for more diverse responses, increase to a higher value. If you use Top P it means that only the tokens comprising the top_p probability mass are considered for responses, so a low top_p value selects the most confident responses. This means that a high top_p value will enable the model to look at more possible words, including less likely ones, leading to more diverse outputs.
-
-- **top_k**: 250
-  - This parameter limits the sampling pool to the top_k most probable tokens. A lower value makes the model more deterministic by considering fewer options, while a higher value allows for more diversity by considering a larger pool of tokens.
 
 We utilized two different RAG pipeline configurations for the experiments:
 - **Simple RAG Pipeline**: Uses a single LLM to generate the responses.
@@ -422,7 +424,9 @@ All the configurations for the experiments can be found in the `src/config` fold
 
 ## Methodology
 
-ll the results are based on the evaluation of the experiments using the evaluation dataset. In this section, we will present the results of the experiments and analyze the performance of the RAG systems based on different language models. The evaluation metrics used for the analysis are faithfulness, answer relevancy, and context utilization. For calculating the metrics, the judge evaluator LLM and Embedder are used to generate the ground truth answers and to calculate the scores.
+All of the results are based on the evaluation of the experiments using the evaluation dataset. In this section, we will present the results of the experiments and analyze the performance of the RAG systems based on different language models. The evaluation metrics used for the analysis are faithfulness, answer relevancy, and context utilization. For calculating the metrics, the judge evaluator LLM and Embedder are used to generate the ground truth answers and to calculate the scores.
+
+The evaluation was done using Ragas. Ragas is a framework that helps to evaluate  Retrieval Augmented Generation (RAG) pipelines. There are existing tools and frameworks that help you build these pipelines but evaluating it and quantifying your pipeline performance can be hard. This is where Ragas (RAG Assessment) comes in.
 
 For the experiments, the results are stored in a CSV file in the `results` folder. Those results are extracted from the Langfuse Server which contain detailed traces and metrics for each experiment. The results are extracted using the `extract_results.py` script.
 
@@ -497,11 +501,17 @@ Where:
 For the Judge LLM Evaluator, we utilized the Claude 3.5 Sonnet model with the model ID `anthropic.claude-3-5-sonnet-20240620-v1:0`. This model was configured with a maximum token limit of 4096 and a temperature setting of 0.1 to control the randomness of the output. Additionally, we employed the Amazon Titan Embed Text 2 model with the model ID `amazon.titan-embed-text-v2:0`, which operates with 512 dimensions and normalization enabled. 
 The configuration for the Judge LLM and Embedder can be found in the `src/constants/evaluation_config.py` file.
 
+### Monitoring the RAGs and Traces (Tracebility & Observability)
+
+The experiments were monitored using the Langfuse, which provides detailed traces and metrics for each experiment. Langfuse is an open-source LLM engineering platform that helps teams collaboratively debug, analyze, and iterate on their LLM applications.
+
+The traces include information about the execution of the RAG pipelines, the interactions with the LLMs, and the performance of the experiments. The traces are stored in the Langfuse Server and can be accessed through the Langfuse API. The traces provide valuable insights into the behavior of the RAG systems and help in identifying potential issues or areas for improvement. Additionally, the traces can be used to analyze the performance of the RAG systems and evaluate the quality of the generated responses. To each of the trace we attach the scores for the faithfulness, answer relevancy, and context utilization metrics, calculated using the Judge LLM and Embedder.
+
 ### Results and Analysis
 
 The initial exploration of the results focused on identifying problematic questions, specifically those with lower scores. The objective was to refine the experiments by excluding these less effective questions and concentrating on the 10 most relevant ones. This approach aims to enhance the overall quality and reliability of the experiments by ensuring that only the most pertinent questions and answers are considered.
 
-To identify these problematic questions, the dataset was grouped by individual questions. For each question, the mean scores were calculated across three key metrics: faithfulness, answer relevancy, and context utilization. These mean scores provided a comprehensive view of each question's performance. Subsequently, an overall average score was computed for each question by taking the basic average of the mean scores from the three metrics. This overall score was then used to rank the questions, allowing for an informed decision on which questions to exclude from the experiments.
+To identify these problematic questions, the dataset was grouped by individual questions by taking into considuration all of the experiments taken. For each question, the mean scores were calculated across three key metrics: faithfulness, answer relevancy, and context utilization. These mean scores provided a comprehensive view of each question's performance. Subsequently, an overall average score was computed for each question by taking the basic average of the mean scores from the three metrics. This overall score was then used to rank the questions, allowing for an informed decision on which questions to exclude from the experiments.
 
 #### Questions with the lowest scores
 
@@ -514,25 +524,26 @@ To identify these problematic questions, the dataset was grouped by individual q
     </tr>
   </thead>
   <tbody>
-    <tr><td>1</td><td>How many stages are there in the development of the Llama 3 model?</td><td>0.939045</td></tr>
-    <tr><td>2</td><td>Does Claude 3 models have vision capabilities?</td><td>0.925869</td></tr>
-    <tr><td>3</td><td>Can the GPT-4 model accept both text and image inputs?</td><td>0.884999</td></tr>
-    <tr><td>4</td><td>On what architecture the Gemma model is based on?</td><td>0.86232</td></tr>
-    <tr><td>5</td><td>What is the difference between the Llama 2 and Llama 2-Chat ?</td><td>0.857979</td></tr>
-    <tr><td>6</td><td>Is Mixtral based on the idea of a mixture of experts?</td><td>0.855282</td></tr>
-    <tr><td>7</td><td>How many stages of training are in the GPT model?</td><td>0.848322</td></tr>
-    <tr><td>8</td><td>What tokenizer is used in the Gemma2 model?</td><td>0.785732</td></tr>
-    <tr><td>9</td><td>What is Mixture of Agents?</td><td>0.770606</td></tr>
-    <tr><td>10</td><td>What are the two tasks in BERT?</td><td>0.768416</td></tr>
-    <tr><td>11</td><td>How can attention be described in the Transformer?</td><td>0.743815</td></tr>
-    <tr><td>12</td><td>What is sliding window attention?</td><td>0.741466</td></tr>
-    <tr><td>13</td><td>What is optimizer is used for LLaMA?</td><td>0.643345</td></tr>
-    <tr><td>14</td><td>On what architecture the GPT-3 model is based on?</td><td>0.583516</td></tr>
+    <tr><td>1</td><td>How many stages are there in the development of the Llama 3 model?</td><td>0.932122</td></tr>
+    <tr><td>2</td><td>Does Claude 3 models have vision capabilities?</td><td>0.929947</td></tr>
+    <tr><td>3</td><td>What is the GPT-4o model?</td><td>0.881287</td></tr>
+    <tr><td>4</td><td>On what architecture the Gemma model is based on?</td><td>0.856614</td></tr>
+    <tr><td>5</td><td>How many stages of training are in the GPT model?</td><td>0.851652</td></tr>
+    <tr><td>6</td><td>What is the difference between the Llama 2 and Llama 2-Chat?</td><td>0.840406</td></tr>
+    <tr><td>7</td><td>Is Mixtral based on the idea of a mixture of experts?</td><td>0.838570</td></tr>
+    <tr><td>8</td><td>Can the GPT-4 model accept both text and image inputs?</td><td>0.823327</td></tr>
+    <tr><td>9</td><td>What tokenizer is used in the Gemma2 model?</td><td>0.782223</td></tr>
+    <tr><td>10</td><td>What is Mixture of Agents?</td><td>0.767041</td></tr>
+    <tr><td>11</td><td>What are the two tasks in BERT?</td><td>0.763584</td></tr>
+    <tr><td>12</td><td>What is sliding window attention?</td><td>0.748468</td></tr>
+    <tr><td>13</td><td>How can attention be described in the Transformer?</td><td>0.728414</td></tr>  
+    <tr><td>14</td><td>What is optimizer is used for LLaMA?</td><td>0.614411</td></tr>
+    <tr><td>15</td><td>On what architecture the GPT-3 model is based on?</td><td>0.570796</td></tr>
   </tbody>
 </table>
 
 
-From the table, we can observe which questions have the lowest scores. Specifically, the last four questions exhibit the lowest performance and are therefore excluded from the subsequent analysis. This exclusion helps to focus the analysis on the more reliable and relevant questions, ensuring that the results are not skewed by outliers or less effective queries.
+From the table, we can observe which questions have the lowest scores. Specifically, the last five questions exhibit the lowest performance and are therefore excluded from the subsequent analysis. This exclusion helps to focus the analysis on the more reliable and relevant questions, ensuring that the results are not skewed by outliers or less effective queries.
 
 The next step involves a detailed analysis of the results for each experiment. This analysis includes ranking the experiments based on the average scores for each metric: faithfulness, answer relevancy, and context utilization. For clarity and comprehensiveness, the top 14 experiments for each metric are highlighted and presented below. Additionally, an overall ranking is conducted by calculating the average of the average scores across all metrics. This comprehensive ranking provides a holistic view of the experiments' performance, facilitating a more informed evaluation and comparison.
 
@@ -547,24 +558,25 @@ The next step involves a detailed analysis of the results for each experiment. T
     </tr>
   </thead>
   <tbody>
-    <tr><td>1</td><td>simple-rag-llama-3.1-70b-instruct</td><td>0.961231</td></tr>
-    <tr><td>2</td><td>simple-rag-llama-3.1-8b</td><td>0.957778</td></tr>
-    <tr><td>3</td><td>simple-rag-llama-3.1-405b-instruct</td><td>0.945641</td></tr>
-    <tr><td>4</td><td>mixture-rag-gemma2-9b-it-thought</td><td>0.924542</td></tr>
-    <tr><td>5</td><td>simple-rag-gemma-7b-it</td><td>0.923677</td></tr>
-    <tr><td>6</td><td>simple-rag-llama-3-8b</td><td>0.913214</td></tr>
-    <tr><td>7</td><td>simple-rag-llama-3-70b</td><td>0.901136</td></tr>
-    <tr><td>8</td><td>simple-rag-mixtral-8x7b-instruct</td><td>0.896447</td></tr>
-    <tr><td>9</td><td>simple-rag-gpt-4o</td><td>0.895355</td></tr>
-    <tr><td>10</td><td>mixture-rag-mixtral-8x7-instruct-thought</td><td>0.892727</td></tr>
-    <tr><td>11</td><td>mixture-rag-mixtral-8x7-instruct-modified</td><td>0.882197</td></tr>
-    <tr><td>12</td><td>simple-rag-mistral-7b-instruct</td><td>0.878027</td></tr>
-    <tr><td>13</td><td>simple-rag-claude-3-opus</td><td>0.867106</td></tr>
-    <tr><td>14</td><td>simple-rag-gpt-4o-mini</td><td>0.851786</td></tr>
+    <tr><td>1</td><td>simple-rag-gpt-4o</td><td>0.950794</td></tr>
+    <tr><td>2</td><td>simple-rag-llama-3.1-405b-instruct</td><td>0.935850</td></tr>
+    <tr><td>3</td><td>simple-rag-llama-3.1-8b-instruct</td><td>0.913799</td></tr>
+    <tr><td>4</td><td>simple-rag-llama-3.1-70b-instructed</td><td>0.913709</td></tr>
+    <tr><td>5</td><td>simple-rag-mistral-7b-instruct</td><td>0.905000</td></tr>
+    <tr><td>6</td><td>simple-rag-gemma-7b-it</td><td>0.902381</td></tr>
+    <tr><td>7</td><td>simple-rag-gpt-4o-mini</td><td>0.872143</td></tr>
+    <tr><td>8</td><td>simple-rag-llama-3-70b-instruct</td><td>0.869946</td></tr>
+    <tr><td>9</td><td>mixture-rag-mixtral-8x7-instruct-modified</td><td>0.868546</td></tr>
+    <tr><td>10</td><td>mixture-rag-llama3.1-8b-instruct-thought</td><td>0.866354</td></tr>
+    <tr><td>11</td><td>simple-rag-llama-3-8b-instruct</td><td>0.862557</td></tr>
+    <tr><td>12</td><td>simple-rag-mixtral-8x7b-instruct</td><td>0.862047</td></tr>
+    <tr><td>13</td><td>simple-rag-claude-3-opus</td><td>0.861019</td></tr>
+    <tr><td>14</td><td>simple-rag-gpt-4-turbo</td><td>0.860575</td></tr>
+    <tr><td>15</td><td>simple-rag-claude-3-sonnet</td><td>0.950794</td></tr>
   </tbody>
 </table>
 
-The table above ranks various experiments based on their faithfulness scores, which measure how accurately the generated responses adhere to the source information. Based on the results from the table, it is evident that the scores of the RAG  systems based on smaller language models are very close to, or in some cases even better than, those based on larger language models. For instance, in the top 7 scores, we have 4 RAG systems that are based on smaller language models: `simple-rag-llama-3.1-8b`, `mixture-rag-gemma2-9b-it-thought` - which is a combination of multiple smaller language, `simple-rag-gemma-7b-it`, and `simple-rag-llama-3-8b`. These smaller models achieve faithfulness scores of 0.957778, 0.924542, 0.923677, and 0.913214 respectively, which are comparable to or even surpass the scores of some larger models. 
+The table above ranks various experiments based on their faithfulness scores, which measure how accurately the generated responses adhere to the source information. Based on the results from the table, it is evident that the scores of the RAG systems based on smaller language models are very close to, or in some cases even better than, those based on larger language models. For instance, in the top 10 scores, we have 5 RAG systems that are based on smaller language models: `simple-rag-llama-3.1-8b-instruct`, `simple-rag-mistral-7b-instruct`, `simple-rag-gemma-7b-it`, `mixture-rag-mixtral-8x7-instruct-modified`- which is a combination of multiple smaller language models and `mixture-rag-llama3.1-8b-instruct-thought`- also a combination of multiple smaller language models with specific prompt. These smaller models achieve faithfulness scores of 0.913799, 0.905000, 0.902381, 0.868546 and 0.866354 respectively, which are comparable to or even surpass the scores of some larger models. 
 
 This observation suggests that smaller language models can perform nearly as well as, or sometimes better than, larger models in terms of faithfulness. The close scores among the top experiments indicate that model architecture and training strategies play a significant role in achieving high faithfulness, regardless of the model size. This insight is valuable for guiding future improvements and optimizations in model development, as it highlights the potential of smaller models to deliver high-quality results, results that are faithful to the context and source information provided.
 
@@ -579,26 +591,27 @@ This observation suggests that smaller language models can perform nearly as wel
     </tr>
   </thead>
   <tbody>
-    <tr><td>1</td><td>simple-rag-gpt-4o-mini</td><td>0.918347</td></tr>
-    <tr><td>2</td><td>simple-rag-mistral-7b-instruct</td><td>0.914597</td></tr>
-    <tr><td>3</td><td>mixture-rag-gemma2-9b-it-thought</td><td>0.910476</td></tr>
-    <tr><td>4</td><td>simple-rag-claude-3.5-sonnet</td><td>0.90533</td></tr>
-    <tr><td>5</td><td>simple-rag-gemma2-9b-it</td><td>0.905305</td></tr>
-    <tr><td>6</td><td>mixture-rag-llama3.1-8b-instruct-thought</td><td>0.897726</td></tr>
-    <tr><td>7</td><td>simple-rag-claude-3-opus</td><td>0.891054</td></tr>
-    <tr><td>8</td><td>simple-rag-llama-3-70b</td><td>0.885328</td></tr>
-    <tr><td>9</td><td>simple-rag-mixtral-8x7b-instruct</td><td>0.884369</td></tr>
-    <tr><td>10</td><td>simple-rag-gpt-4o</td><td>0.884128</td></tr>
-    <tr><td>11</td><td>simple-rag-claude-3-sonnet</td><td>0.874334</td></tr>
-    <tr><td>12</td><td>mixture-rag-llama3.1-8b-instruct-modified</td><td>0.871686</td></tr>
-    <tr><td>13</td><td>mixture-rag-gemma2-9b-it-modified</td><td>0.867729</td></tr>
-    <tr><td>14</td><td>simple-rag-claude-3-haiku</td><td>0.865661</td></tr>
+    <tr><td>1</td><td>simple-rag-mistral-7b-instruct</td><td>0.903208</td></tr>
+    <tr><td>2</td><td>simple-rag-gpt-4o-mini</td><td>0.902027</td></tr>
+    <tr><td>3</td><td>simple-rag-gemma2-9b-it</td><td>0.898397</td></tr>
+    <tr><td>4</td><td>simple-rag-llama-3.1-8b-instruct</td><td>0.889998</td></tr>
+    <tr><td>5</td><td>simple-rag-claude-3.5-sonnet</td><td>0.887503</td></tr>
+    <tr><td>6</td><td>mixture-rag-gemma2-9b-it-thought</td><td>0.880448</td></tr>
+    <tr><td>7</td><td>mixture-rag-gemma2-9b-it-modified</td><td>0.875354</td></tr>
+    <tr><td>8</td><td>simple-rag-mixtral-8x7b-instruct</td><td>0.871510</td></tr>
+    <tr><td>9</td><td>simple-rag-claude-3-opus</td><td>0.869271</td></tr>
+    <tr><td>10</td><td>simple-rag-claude-3-sonnet</td><td>0.868577</td></tr>
+    <tr><td>11</td><td>mixture-rag-mixtral-8x7-instruct-thought</td><td>0.868344</td></tr>
+    <tr><td>12</td><td>simple-rag-gpt-4o</td><td>0.868135</td></tr>
+    <tr><td>13</td><td>simple-rag-gpt-4-turbo</td><td>0.866888</td></tr>
+    <tr><td>14</td><td>simple-rag-claude-3-haiku</td><td>0.863664</td></tr>
+    <tr><td>15</td><td>simple-rag-gemma-7b-it</td><td>0.863156</td></tr>
   </tbody>
 </table>
 
-The table above ranks various experiments based on their answer relevancy scores, which measure the relevance of the generated responses to the given prompts. The results show that in the top 7 experiments, 4 of them are again based on smaller language models with simple rag pipeline approach or with the smart technique of mixture rag pipeline approach. The experiments `simple-rag-mistral-7b-instruct`, `mixture-rag-gemma2-9b-it-thought`, `simple-rag-gemma2-9b-it` and `mixture-rag-llama3.1-8b-instruct-thought` have really high answer relevancy scores of 0.914597, 0.910476, 0.905305, and 0.897726 respectively. 
+The table above ranks various experiments based on their answer relevancy scores, which measure the relevance of the generated responses to the given prompts. The results show that in the top 10 experiments, 6 of them are again based on smaller language models with simple rag pipeline approach or with the smart technique of mixture rag pipeline approach. The experiments `simple-rag-mistral-7b-instruct`, `simple-rag-gemma2-9b-it`, `simple-rag-llama-3.1-8b-instruct`, `mixture-rag-gemma2-9b-it-thought`, `mixture-rag-gemma2-9b-it-modified` and `simple-rag-mixtral-8x7b-instruct` have really high answer relevancy scores of 0.903208, 0.898397, 0.889998, 0.880448, 0.875354 and 0.871510 respectively. 
 
-This again indicates that smaller language models can generate highly relevant responses that are closely aligned with the given prompts. We can even see that the mixture rag pipeline approach with the smart technique of choosing the best response from the generated responses(thought) can achieve high answer relevancy scores. 
+This again indicates that smaller language models can generate highly relevant responses that are closely aligned with the given prompts. We can even see that the Mixture RAG pipeline approach with the smart technique of choosing the best response from the generated responses(thought) can achieve high answer relevancy scores. 
 
 
 #### Context Utilization
@@ -612,24 +625,25 @@ This again indicates that smaller language models can generate highly relevant r
     </tr>
   </thead>
   <tbody>
-    <tr><td>1</td><td>mixture-rag-llama3.1-8b-instruct</td><td>0.916667</td></tr>
-    <tr><td>2</td><td>mixture-rag-mixtral-8x7-instruct-modified</td><td>0.916667</td></tr>
-    <tr><td>3</td><td>mixture-rag-mixtral-8x7-instruct</td><td>0.913889</td></tr>
-    <tr><td>4</td><td>simple-rag-mixtral-8x7b-instruct</td><td>0.908333</td></tr>
-    <tr><td>5</td><td>simple-rag-mistral-7b-instruct</td><td>0.908333</td></tr>
-    <tr><td>6</td><td>simple-rag-gpt-4o-mini</td><td>0.9</td></tr>
-    <tr><td>7</td><td>mixture-rag-llama3.1-8b-instruct-modified</td><td>0.897222</td></tr>
-    <tr><td>8</td><td>simple-rag-llama-3.1-405b-instruct</td><td>0.897222</td></tr>
-    <tr><td>9</td><td>simple-rag-gpt-4o</td><td>0.897222</td></tr>
-    <tr><td>10</td><td>mixture-rag-gemma2-9b-it-modified</td><td>0.880556</td></tr>
-    <tr><td>11</td><td>mixture-rag-gemma2-9b-it-thought</td><td>0.880556</td></tr>
-    <tr><td>12</td><td>simple-rag-llama-3.1-8b</td><td>0.880556</td></tr>
-    <tr><td>13</td><td>simple-rag-gemma-7b-it</td><td>0.875000</td></tr>
-    <tr><td>14</td><td>simple-rag-llama-3-8b</td><td>0.875000</td></tr>
+    <tr><td>1</td><td>mixture-rag-claude-3-haiku-thought</td><td>0.933333</td></tr>
+    <tr><td>2</td><td>simple-rag-mistral-7b-instruct</td><td>0.925000</td></tr>
+    <tr><td>3</td><td>mixture-rag-claude-3-haiku</td><td>0.916667</td></tr>
+    <tr><td>4</td><td>mixture-rag-gemma2-9b-it-modified</td><td>0.916667</td></tr>
+    <tr><td>5</td><td>mixture-rag-llama3.1-8b-instruct-modified</td><td>0.908333</td></tr>
+    <tr><td>6</td><td>simple-rag-gpt-4o</td><td>0.905556</td></tr>
+    <tr><td>7</td><td>mixture-rag-mixtral-8x7-instruct-thought</td><td>0.900000</td></tr>
+    <tr><td>8</td><td>mixture-rag-llama3.1-8b-instruct-thought</td><td>0.897222</td></tr>
+    <tr><td>9</td><td>simple-rag-llama-3-70b-instruct</td><td>0.897222</td></tr>
+    <tr><td>10</td><td>mixture-rag-gemma2-9b-it-thought</td><td>0.897222</td></tr>
+    <tr><td>11</td><td>simple-rag-gemma-7b-it</td><td>0.897222</td></tr>
+    <tr><td>12</td><td>simple-rag-llama-3.1-70b-instructed</td><td>0.897222</td></tr>
+    <tr><td>13</td><td>simple-rag-claude-3-haiku</td><td>0.894444</td></tr>
+    <tr><td>14</td><td>simple-rag-gpt-4o-mini</td><td>0.888889</td></tr>
+    <tr><td>15</td><td>simple-rag-gpt-4-turbo</td><td>0.888889</td></tr>
   </tbody>
 </table>
 
-The table above ranks various experiments based on their context utilization scores, which measure how effectively the retrieved context aligns with the annotated answers. Here really we can see how RAG systems based on smaller language models are performing really well in terms of context utilization. From the best 14 experiments, 11 of them are based on smaller language models. Another interesting thing is that mixture RAG approaches are excellent in context utilization, with 3 of the top 5 experiments being based on the mixture RAG approach. The experiments `mixture-rag-llama3.1-8b-instruct`, `mixture-rag-mixtral-8x7-instruct-modified`, and `mixture-rag-mixtral-8x7-instruct` have context utilization scores of 0.916667, 0.916667, and 0.913889 respectively.
+The table above ranks various experiments based on their context utilization scores, which measure how effectively the retrieved context aligns with the annotated answers. Here really we can see how RAG systems based on smaller language models are performing really well in terms of context utilization. From the best 10 experiments, 6 of them are based on smaller language models. Another interesting thing is that Mixture RAG approaches are excellent in context utilization, with 2 of the top 5 experiments being based on the Mixture RAG approach. The experiments `mixture-rag-llama3.1-8b-instruct`, `mixture-rag-mixtral-8x7-instruct-modified`, and `mixture-rag-mixtral-8x7-instruct` have context utilization scores of 0.916667, 0.916667, and 0.913889 respectively.
 
 #### Average of the Scores
 
@@ -642,62 +656,25 @@ The table above ranks various experiments based on their context utilization sco
     </tr>
   </thead>
   <tbody>
-    <tr><td>1</td><td>mixture-rag-gemma2-9b-it-thought</td><td>0.905191</td></tr>
-    <tr><td>2</td><td>simple-rag-mistral-7b-instruct</td><td>0.900319</td></tr>
-    <tr><td>3</td><td>simple-rag-llama-3.1-405b-instruct</td><td>0.896580</td></tr>
-    <tr><td>4</td><td>simple-rag-mixtral-8x7b-instruct</td><td>0.896383</td></tr>
-    <tr><td>5</td><td>simple-rag-gpt-4o</td><td>0.892935</td></tr>
-    <tr><td>6</td><td>simple-rag-gpt-4o-mini</td><td>0.890044</td></tr>
-    <tr><td>7</td><td>simple-rag-llama-3.1-70b-instruct</td><td>0.890022</td></tr>
-    <tr><td>8</td><td>simple-rag-gemma-7b-it</td><td>0.887449</td></tr>
-    <tr><td>9</td><td>simple-rag-llama-3.1-8b</td><td>0.887003</td></tr>
-    <tr><td>10</td><td>mixture-rag-mixtral-8x7-instruct-modified</td><td>0.886127</td></tr>
-    <tr><td>11</td><td>simple-rag-llama-3-70b</td><td>0.883451</td></tr>
-    <tr><td>12</td><td>simple-rag-llama-3-8b</td><td>0.881460</td></tr>
-    <tr><td>13</td><td>simple-rag-gemma2-9b-it</td><td>0.871802</td></tr>
-    <tr><td>14</td><td>mixture-rag-gemma2-9b-it-modified</td><td>0.857831</td></tr>
+    <tr><td>1</td><td>simple-rag-mistral-7b-instruct</td><td>0.911069</td></tr>
+    <tr><td>2</td><td>simple-rag-gpt-4o</td><td>0.908161</td></tr>
+    <tr><td>3</td><td>simple-rag-llama-3.1-8b-instruct</td><td>0.890155</td></tr>
+    <tr><td>4</td><td>simple-rag-gpt-4o-mini</td><td>0.887686</td></tr>
+    <tr><td>5</td><td>simple-rag-gemma-7b-it</td><td>0.887586</td></tr>
+    <tr><td>6</td><td>simple-rag-llama-3.1-70b-instruct</td><td>0.880033</td></tr>
+    <tr><td>7</td><td>simple-rag-llama-3-70b-instruct</td><td>0.876048</td></tr>
+    <tr><td>8</td><td>simple-rag-gemma2-9b-it</td><td>0.874335</td></tr>
+    <tr><td>9</td><td>simple-rag-mixtral-8x7b-instruct</td><td>0.872297</td></tr>
+    <tr><td>10</td><td>simple-rag-gpt-4-turbo</td><td>0.872117</td></tr>
+    <tr><td>11</td><td>simple-rag-llama-3.1-405b-instruct</td><td>0.871293</td></tr>
+    <tr><td>12</td><td>mixture-rag-gemma2-9b-it-modified</td><td>0.869955</td></tr>
+    <tr><td>13</td><td>mixture-rag-llama3.1-8b-instruct-thought</td><td>0.869177</td></tr>
+    <tr><td>14</td><td>simple-rag-claude-3-haiku-</td><td>0.860552</td></tr>
+    <tr><td>15</td><td>mixture-rag-gemma2-9b-it-thought</td><td>0.860197</td></tr>
   </tbody>
 </table>
 
-The table above ranks various experiments based on their average scores, which provide a comprehensive view of the experiments' performance across all metrics. The results show the dominance of RAG systems based on smaller language models, with 9 of the top 14 experiments being based on smaller models.
-
-Here are some examples questions and answers from the experiments from the table above:
-
-```plaintext
-mixture-rag-gemma2-9b-it-thought
-
-Question: "Does Claude 3 models have vision capabilities?"
-
-Answer: "Yes, Claude 3 models have vision capabilities. According to the text, they can recognize and identify objects visually, and they can think in complex ways, such as understanding both an object's appearance and its connections to concepts like mathematics. Additionally, the text mentions that Claude 3 models can process images, including tables, graphs, and photos, and can even generate text from images with hard-to-read handwriting"
-```
-
-```plaintext
-mixture-rag-gemma2-9b-it-modified
-
-Question: "Does Claude 3 models have vision capabilities?"
-
-Answer: "Yes, Claude 3 models possess vision capabilities. 
-
-They can recognize and identify objects visually, understanding not only their appearance but also their connections to concepts like mathematics.  This allows them to process images, including tables, graphs, and photos, and even generate text from images with hard-to-read handwriting. 
-
-Furthermore, Claude 3 models can accept multimodal input, meaning they can process both text and images together. This expands their capabilities and allows for richer context in understanding user requests. 
-
-It's important to note, however, that the performance of these models may be less robust for low-resource languages and they might generate inaccurate information about images. Therefore, for critical applications requiring high precision and accuracy, human validation is recommended."
-```
-
-```plaintext
-simple-rag-gemma2-9b-it
-
-Question: "Does Claude 3 models have vision capabilities?"
-
-Answer: "Yes, Claude 3 models have vision capabilities. 
-
-The text states: "Claude 3 models can recognize and identify objects visually, and they can think in complex ways, such as understanding both an object’s appearance and its connections to concepts like mathematics." 
-
-It also mentions that Claude 3 Haiku, one of the models in the family, includes vision capabilities."
-```
-
-It can be seen that all of the answers are relevant and informative but the Mixture RAG approach with thought technique is providing the most concise and informative answer. This is a great example of how the Mixture RAG approach can enhance the performance of the RAG system by aggregating responses from multiple smaller language models and selecting the best one.
+The table above ranks various experiments based on their average scores, which provide a comprehensive view of the experiments' performance across all metrics. The results show the dominance of RAG systems based on smaller language models, with 9 of the top 15 experiments being based on smaller models.
 
 
 ### Conclusion
@@ -729,6 +706,8 @@ Moreover, we do not need to work the additional benefits of the smaller language
 - Privacy and compliance advantages: Self-hosted smaller models can help organizations better comply with data protection regulations and maintain stricter control over sensitive information.
 
 - Flexibility and adaptability: Smaller models are often easier to fine-tune or adapt to specific domains or tasks, allowing for more tailored solutions without the need for extensive computational resources.
+
+- Ability to run on edge devices: Smaller models can be deployed on edge devices, enabling AI applications to operate locally without relying on cloud services. This capability is essential for scenarios where low latency, privacy, or limited network connectivity are critical.
 
 These insights and benefits could guide future developments in language model applications, potentially leading to more resource-efficient, accessible, and equally effective AI systems. By leveraging smaller language models in RAG systems, organizations and individuals can harness powerful AI capabilities while enjoying greater flexibility, control, and cost-effectiveness.
 
